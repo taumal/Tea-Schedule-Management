@@ -2,9 +2,14 @@ package com.example.TeaScheduleManagement.controller;
 
 import com.example.TeaScheduleManagement.entity.Day;
 import com.example.TeaScheduleManagement.service.DayService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -16,6 +21,8 @@ import java.util.List;
 @Controller
 public class DayController {
     private final DayService dayService;
+
+    SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
 
     @Autowired
     public DayController(DayService dayService) {
@@ -61,6 +68,17 @@ public class DayController {
             message = "Entry Successful";
             redirectAttributes.addFlashAttribute("MessageOK",message);
         }
+        return "redirect:/";
+    }
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
+    @GetMapping("/sign-out")
+    public String performLogout(Authentication authentication, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) {
+        // .. perform logout
+        this.logoutHandler.logout(request, response, authentication);
+        redirectAttributes.addFlashAttribute("logout", "You have been logged out");
         return "redirect:/";
     }
 }

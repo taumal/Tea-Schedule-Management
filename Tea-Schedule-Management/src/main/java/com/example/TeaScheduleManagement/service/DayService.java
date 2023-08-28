@@ -11,6 +11,9 @@ import java.time.temporal.ChronoField;
 import java.util.List;
 import java.util.Optional;
 import java.util.Calendar;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class DayService {
@@ -57,4 +60,22 @@ public class DayService {
             return null;
         }
     }
+
+//    public void run(String... args) throws Exception {
+//        ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(1);
+//        List<Day> teaSchedule = dayRepository.findAll();
+//        LocalDate currentDate = LocalDate.now();
+//        scheduledExecutorService.scheduleAtFixedRate(() -> {
+//            for (Day day : teaSchedule) {
+//                switch (day.getName()) {
+//                    case "Monday" -> day.setToday(currentDate.with(DayOfWeek.MONDAY));
+//                    case "Tuesday" -> day.setToday(currentDate.with(DayOfWeek.TUESDAY));
+//                    case "Wednesday" -> day.setToday(currentDate.with(DayOfWeek.WEDNESDAY));
+//                    case "Thursday" -> day.setToday(currentDate.with(DayOfWeek.THURSDAY));
+//                    case "Friday" -> day.setToday(currentDate.with(DayOfWeek.FRIDAY));
+//                }
+//                dayRepository.save(day);
+//            }
+//        }, 0, 5, TimeUnit.MINUTES);
+//    }
 }
