@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Page</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+  <style>
+    body {
+      background-color:  #5aba8a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .login-container {
+      background-color: #01565b;
+      border-radius: 8px;
+      padding: 2rem;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      width: 300px;
+      text-align: center;
+      color: #fff;
+    }
+    .login-container h2 {
+      margin-bottom: 1.5rem;
+    }
+    .form-control {
+      border-color: #5aba8a;
+    }
+    .btn-primary {
+      background-color: #e1f296;
+      border-color: #5aba8a;
+      color: #01565b;
+    }
+    .btn-primary:hover {
+      background-color: #468c6f;
+      border-color: #468c6f;
+    }
+
+    .validation-err {
+      background-color: #e1f296;
+      border-color: #e1f296;
+      color: #01565b;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+<div class="login-container">
+  <div th:if="${param.error}">
+    <div class="alert alert-danger validation-err">Invalid Username or Password</div>
+  </div>
+  <h2>Tea Scheduler</h2>
+  <form th:action="@{/login}" method="post">
+    <div class="mb-3">
+      <input type="text" id="username" name="username" class="form-control" placeholder="Enter username" />
+    </div>
+    <div class="mb-3">
+      <input type="password" id="password" name="password" class="form-control" placeholder="Enter password" />
+    </div>
+    <button type="submit" class="btn btn-primary btn-block">Login</button>
+  </form>
+</div>
+<!-- Bootstrap JS -->
+<script th:src="@{/js/bootstrap.bundle.min.js}" ></script>
+</body>
+</html>
