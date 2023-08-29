@@ -32,8 +32,14 @@ public class DayController {
     @RequestMapping("/")
     public String mainPage(Model model) {
         List<Day> dayList = dayService.listAllDays();
+
+        String[] colors = {
+                "#e1f296", "#5aba8a", "#01565b", "#5aba8a", "#e1f296"
+        };
+
         model.addAttribute("days", dayList);
         model.addAttribute("formTitle", "Tea");
+        model.addAttribute("colors", colors);
         return "schedulePage";
     }
 
