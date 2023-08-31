@@ -91,10 +91,10 @@
 <body>
 <main>
     <div class="container-fluid px-4">
-        <div class="top-strip">
+        <div class="top-strip ">
             <div class="float-end">
-                <a th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" th:href="@{/sign-out}" class="btn btn-link">Log Out</a>
-                <a th:unless="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" th:href="@{/login}" class="btn btn-link">Log In</a>
+                <a class="btn btn-dark text-white align-self-center" th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" th:href="@{/sign-out}">Sign Out</a>
+                <a class="btn btn-dark text-white align-self-center" th:unless="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" th:href="@{/login}">Log In</a>
             </div>
             <h1 class="mt-4 text-center" style="padding-left: 100px" th:text="${formTitle}">Dashboard</h1>
         </div>
