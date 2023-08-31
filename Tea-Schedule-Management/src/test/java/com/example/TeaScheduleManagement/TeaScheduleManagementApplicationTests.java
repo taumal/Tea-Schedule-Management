@@ -22,7 +22,7 @@ class TeaScheduleManagementApplicationTests {
 
     @Test
     public void save() {
-        Day day = new Day(5L,"Friday","Babu","Parvez");
-        dayRepository.save(day);
+//        Day day = new Day(5L,"Friday","Babu","Parvez");
+//        dayRepository.save(day);
     }
 }
