@@ -38,7 +38,7 @@ public class DayController {
         };
 
         model.addAttribute("days", dayList);
-        model.addAttribute("formTitle", "Tea");
+        model.addAttribute("formTitle", "Tea Scheduler");
         model.addAttribute("colors", colors);
         return "schedulePage";
     }
@@ -47,7 +47,7 @@ public class DayController {
     public String updateSchedule(Day day, RedirectAttributes redirectAttributes) {
         String message = null;
         boolean conflict = false;
-        if (day.getMorningName().equals(day.getEveningName())) {
+        if (day.getMorningName().trim().equals(day.getEveningName().trim())) {
             message = "Cannot be on the same day";
             redirectAttributes.addFlashAttribute("Message", message);
             conflict=true;
@@ -60,16 +60,18 @@ public class DayController {
             Day nextDay = dayService.findByDayName(nextDayName);
             String previousDayName = dayNames.get((dayNames.indexOf(currentDayName) - 1 + dayNames.size()) % dayNames.size());
             Day previousDay = dayService.findByDayName(previousDayName);
-            if (nextDay.getMorningName() != null && day.getEveningName().equals(nextDay.getMorningName())) {
+            if (nextDay.getMorningName() != null && day.getEveningName().trim().equals(nextDay.getMorningName().trim())) {
                 message = "Cannot use the same name from " + currentDayName + " evening to " + nextDayName + " morning";
                 conflict=true;
-            } else if (previousDay.getEveningName() != null && day.getMorningName().equals(previousDay.getEveningName())) {
+            } else if (previousDay.getEveningName() != null && day.getMorningName().trim().equals(previousDay.getEveningName().trim())) {
                 message = "Cannot use the same name from " + previousDayName + " evening to " + currentDayName + " morning";
                 conflict=true;
             }
             redirectAttributes.addFlashAttribute("Message",message);
         }
         if (!conflict){
+            day.setMorningName(day.getMorningName().trim());
+            day.setEveningName(day.getEveningName().trim());
             dayService.save(day);
             message = "Entry Successful";
             redirectAttributes.addFlashAttribute("MessageOK",message);

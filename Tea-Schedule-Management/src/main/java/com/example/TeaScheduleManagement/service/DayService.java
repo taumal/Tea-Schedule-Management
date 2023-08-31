@@ -31,11 +31,11 @@ public class DayService {
         for (Day day :
                 teaSchedule) {
             switch (day.getName()) {
-                case "Monday" -> day.setToday(currentDate.with(DayOfWeek.MONDAY));
-                case "Tuesday" -> day.setToday(currentDate.with(DayOfWeek.TUESDAY));
-                case "Wednesday" -> day.setToday(currentDate.with(DayOfWeek.WEDNESDAY));
-                case "Thursday" -> day.setToday(currentDate.with(DayOfWeek.THURSDAY));
-                case "Friday" -> day.setToday(currentDate.with(DayOfWeek.FRIDAY));
+                case "Monday" -> day.setToday(currentDate.with(DayOfWeek.MONDAY).getDayOfMonth());
+                case "Tuesday" -> day.setToday(currentDate.with(DayOfWeek.TUESDAY).getDayOfMonth());
+                case "Wednesday" -> day.setToday(currentDate.with(DayOfWeek.WEDNESDAY).getDayOfMonth());
+                case "Thursday" -> day.setToday(currentDate.with(DayOfWeek.THURSDAY).getDayOfMonth());
+                case "Friday" -> day.setToday(currentDate.with(DayOfWeek.FRIDAY).getDayOfMonth());
             }
         }
 

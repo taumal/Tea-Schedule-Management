@@ -62,110 +62,114 @@
             -webkit-overflow-scrolling: touch;
         }
 
-        .list-group-item+.list-group-item {
+        .list-group-item + .list-group-item {
             border-top-width: 1px !important;
+        }
+
+        .parent {
+            width: 95px;
+            height: 80px;
+            position: relative;
+        }
+
+        .text-shadow {
+            text-shadow: 0 1px 1px #000000;
+        }
+        .top-strip {
+            height: 100px;
+            background-color: #01565b;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 
 <body>
-
 <main>
     <div class="container-fluid px-4">
-<div class="float-end">
-    <a th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" th:href="@{/sign-out}" class="btn btn-link">Log Out</a>
-    <a th:unless="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" th:href="@{/login}" class="btn btn-link">Log In</a>
-</div>
-        <h1 class="mt-4" th:text="${formTitle}">Dashboard</h1>
+        <div class="top-strip">
+            <div class="float-end">
+                <a th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" th:href="@{/sign-out}" class="btn btn-link">Log Out</a>
+                <a th:unless="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" th:href="@{/login}" class="btn btn-link">Log In</a>
+            </div>
+            <h1 class="mt-4 text-center" style="padding-left: 100px" th:text="${formTitle}">Dashboard</h1>
+        </div>
+<br>
         <div th:if="${Message != null}" class="alert alert-danger" role="alert">
             <span th:text="${Message}"></span>
         </div>
         <div th:if="${MessageOK != null}" class="alert alert-success" role="alert">
             <span th:text="${MessageOK}"></span>
         </div>
-
-        <ol class="breadcrumb mb-4">
-            <li class="breadcrumb-item active" th:text="${formTitle}">Dashboard</li>
-        </ol>
-
-        <div class="card mb-4">
-            <div class="card-body">
-
-                <table id="table" class="table table-bordered">
-                    <thead>
-                    <tr>
-                        <th>Serial</th>
-                        <th>Day</th>
-                        <th>Date</th>
-                        <th>Morning Name</th>
-                        <th>Evening Name</th>
-                        <th th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">Actions</th>
-                    </tr>
-                    </thead>
-                    <th:block th:each="day, s: ${days}">
-                        <form th:action="@{/update}" th:object="${day}" method="post">
-                            <tr>
-                                <input type="hidden" name="id" th:value="${day.id}">
-                                <input type="hidden" name="name" th:value="${day.name}">
-                                <td>
-                                    [[${s.count}]]
-                                </td>
-                                <td>
-                                    [[${day.name}]]
-                                </td>
-                                <td>
-                                    [[${day.today}]]
-                                </td>
-                                <td>
-                                    <span th:id="'morningName'+ ${day.id}" class="d-block" th:text="${day.morningName}"></span>
-                                    <input th:id="'morningNameInput' + ${day.id}" type="text" name="morningName" th:value="${day.morningName}"
+        <br>
+<!--        <ol class="breadcrumb mb-4">-->
+<!--            <li class="breadcrumb-item active" th:text="${formTitle}">Dashboard</li>-->
+<!--        </ol>-->
+            <div class="list-group list-group-radio d-grid gap-3 border-0 " style="padding-top: 30px">
+                <th:block th:each="day, s: ${days}">
+                    <form th:action="@{/update}" method="post">
+                        <input type="hidden" name="id" th:value="${day.id}">
+                        <input type="hidden" name="name" th:value="${day.name}">
+                        <div class="list-group-item d-flex gap-3 py-3 my-2 " aria-current="true"
+                             th:style="|background-color: ${colors[s.index]}|">
+                            <div class="d-flex gap-2 w-100 justify-content-between align-items-center">
+                                <div class="parent d-flex justify-content-center"
+                                     th:style="|background-image: url(@{/images/arrow.png}); background-size: 90px 80px; background-repeat: no-repeat;|">
+                                    <div class="align-self-center" th:style="|margin-left: -10px;|">
+                                        <span class="" th:text="${day.name.substring(0,3)}"></span>
+                                        <br>
+                                        <span class="fw-bold fs-4" th:text="${day.today}"></span>
+                                    </div>
+                                </div>
+                                <div class="fs-5" th:classappend="|${colors[s.index] eq '#e1f296' ? 'text-black' : 'text-white text-shadow'}|">
+                                    <h5 class="mb-0">Morning</h5>
+                                    <span th:id="'morningName'+ ${day.id}" class="d-block"
+                                          th:text="${day.morningName}"></span>
+                                    <input th:id="'morningNameInput' + ${day.id}" type="text" name="morningName"
+                                           th:value="${day.morningName}"
+                                           class="form-control d-none" />
+                                    <!--                            <p class="mb-0 opacity-75" style="color:black">[[${day.morningName}]] </p>-->
+                                </div>
+                                <div class="fs-5" th:classappend="|${colors[s.index] eq '#e1f296' ? 'text-black' : 'text-white text-shadow'}|">
+                                    <h5 class="mb-0">Evening</h5>
+                                    <span th:id="'eveningName'+ ${day.id}" class="d-block"
+                                          th:text="${day.eveningName}"></span>
+                                    <input th:id="'eveningNameInput' + ${day.id}" type="text" name="eveningName"
+                                           th:value="${day.eveningName}"
                                            class="form-control d-none"/>
-                                </td>
-                                <td>
-                                    <span th:id="'eveningName'+ ${day.id}" class="d-block" th:text="${day.eveningName}"></span>
-                                    <input th:id="'eveningNameInput' + ${day.id}" type="text" name="eveningName" th:value="${day.eveningName}"
-                                           class="form-control d-none"/>
-                                </td>
-                                <td th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
-                                    <button type="submit" id="submitButton" th:id="'submitButton#'+ ${day.id}" class="btn btn-success btn-sm h4 mr-3 d-none" role="button" onclick="showHideInputFields(this.id)">
+                                    <!--                            <p class="mb-0 opacity-75" style="color: black">[[${day.eveningName}]]</p>-->
+                                </div>
+                                <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                                    <!--                            <h6 class="mb-0" style="color: black">Actions</h6>-->
+                                    <button type="submit" id="submitButton" th:id="'submitButton#'+ ${day.id}"
+                                            class="btn btn-success btn-sm h4 mr-3 d-none" role="button"
+                                            onclick="showHideInputFields(this.id)">
                                         <!--                                    th:href="@{'/branch/edit/' +${day.id}}"-->
                                         <i class="fa-solid fa-check"></i>
                                     </button>
-                                    <button type="button" id="cancelButton" th:id="'cancelButton#'+ ${day.id}" class="btn btn-danger btn-sm h4 mr-3 d-none" role="button" onclick="cancelButton(this.id)">
+                                    <button type="button" id="cancelButton" th:id="'cancelButton#'+ ${day.id}"
+                                            class="btn btn-danger btn-sm h4 mr-3 d-none" role="button"
+                                            onclick="cancelButton(this.id)">
                                         <!--                                    th:href="@{'/branch/edit/' +${day.id}}"-->
                                         <i class="fa-solid fa-ban"></i>
                                     </button>
-                                    <button type="button" id="editButton" th:id="'showHideBtn#'+ ${day.id}" class="btn btn-primary btn-sm h4 mr-3" role="button" onclick="showHideInputFields(this.id)">
+                                    <button type="button" id="editButton" th:id="'showHideBtn#'+ ${day.id}"
+                                            class="btn btn-dark btn-sm h4 mr-3" role="button"
+                                            onclick="showHideInputFields(this.id)">
                                         <!--                                    th:href="@{'/branch/edit/' +${day.id}}"-->
                                         <i class="fas fa-edit me-1"></i>
                                     </button>
-
-                                </td>
-                            </tr>
-                        </form>
-                    </th:block>
-                </table>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </th:block>
             </div>
         </div>
-
-        <div class="list-group list-group-radio d-grid gap-2 border-0 w-aut">
-            <th:block th:each="day, s: ${days}">
-                <a href="#" class="list-group-item list-group-item-action d-flex gap-3 py-3 my-2" aria-current="true" th:style="|background-color: ${colors[s.index]}|">
-                    <div class="d-flex gap-2 w-100 justify-content-between" >
-                        <img src="https://github.com/twbs.png" alt="twbs" width="32" height="32" class="rounded-circle flex-shrink-0">
-                        <div>
-                            <h6 class="mb-0">Morning</h6>
-                            <p class="mb-0 opacity-75">[[${day.morningName}]]</p>
-                        </div>
-                        <div>
-                            <h6 class="mb-0">Evening</h6>
-                            <p class="mb-0 opacity-75">[[${day.eveningName}]]</p>
-                        </div>
-                    </div>
-                </a>
-            </th:block>
-        </div>
-    </div>
     <!--    <script>-->
     <!--        document.getElementById("editButton").addEventListener("click", function () {-->
     <!--            var inputFieldMorning = document.getElementById("morningNameInput");-->
@@ -204,15 +208,15 @@
 
         function showHideInputFields(domId) {
             let id = domId.split('#')[1];
-            var morningName = document.getElementById("morningName"+id);
-            var eveningName = document.getElementById("eveningName"+id);
-            var inputFieldMorning = document.getElementById("morningNameInput"+id);
-            var inputFieldEvening = document.getElementById("eveningNameInput"+id);
-            var submitBtn = document.getElementById("submitButton#"+id);
-            var cancelBtn = document.getElementById("cancelButton#"+id);
-            var showHideBtn= document.getElementById(domId);
+            var morningName = document.getElementById("morningName" + id);
+            var eveningName = document.getElementById("eveningName" + id);
+            var inputFieldMorning = document.getElementById("morningNameInput" + id);
+            var inputFieldEvening = document.getElementById("eveningNameInput" + id);
+            var submitBtn = document.getElementById("submitButton#" + id);
+            var cancelBtn = document.getElementById("cancelButton#" + id);
+            var showHideBtn = document.getElementById(domId);
 
-            if (inputFieldMorning.classList.contains("d-none") && inputFieldEvening.classList.contains("d-none") ) {
+            if (inputFieldMorning.classList.contains("d-none") && inputFieldEvening.classList.contains("d-none")) {
                 morningName.classList.remove("d-block");
                 morningName.classList.add("d-none");
                 eveningName.classList.remove("d-block");
@@ -225,15 +229,16 @@
             } else {
             }
         }
-        function cancelButton(domId){
+
+        function cancelButton(domId) {
             let id = domId.split('#')[1];
-            var morningName = document.getElementById("morningName"+id);
-            var eveningName = document.getElementById("eveningName"+id);
-            var inputFieldMorning = document.getElementById("morningNameInput"+id);
-            var inputFieldEvening = document.getElementById("eveningNameInput"+id);
-            var submitBtn = document.getElementById("submitButton#"+id);
+            var morningName = document.getElementById("morningName" + id);
+            var eveningName = document.getElementById("eveningName" + id);
+            var inputFieldMorning = document.getElementById("morningNameInput" + id);
+            var inputFieldEvening = document.getElementById("eveningNameInput" + id);
+            var submitBtn = document.getElementById("submitButton#" + id);
             var cancelBtn = document.getElementById(domId);
-            var showHideBtn= document.getElementById("showHideBtn#"+id);
+            var showHideBtn = document.getElementById("showHideBtn#" + id);
             var dataDisplay = document.querySelector(".data-display");
             if (showHideBtn.classList.contains("d-none")) {
                 morningName.classList.add("d-block");

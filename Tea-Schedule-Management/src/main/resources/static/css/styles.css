@@ -1,5 +1,5 @@
 .list-group {
-    max-width: 460px;
+    max-width: 660px;
     margin: 4rem auto;
 }
 
@@ -37,7 +37,7 @@
 
 .list-group-radio .list-group-item {
     cursor: pointer;
-    border-radius: .5rem;
+    border-radius: 1.5rem;
 }
 .list-group-radio .form-check-input {
     z-index: 2;

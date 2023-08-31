@@ -28,7 +28,9 @@ public class Day {
     @Column
     private String eveningName;
 
+    //    @Transient
+//    private LocalDate today;
     @Transient
-    private LocalDate today;
+    private Integer today;
 
 }

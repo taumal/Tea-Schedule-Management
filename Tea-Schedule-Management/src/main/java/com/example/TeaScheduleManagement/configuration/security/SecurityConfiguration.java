@@ -29,7 +29,7 @@ public class SecurityConfiguration {
         return http.csrf(csrf -> csrf.disable())
                 .formLogin(form -> form.loginPage("/login").permitAll())
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/").permitAll())
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/assets/**", "/css/**", "/js/**","/login").permitAll().anyRequest().authenticated())
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/images/**","/assets/**", "/css/**", "/js/**","/login").permitAll().anyRequest().authenticated())
 //                .formLogin(form -> form.loginPage("/login").defaultSuccessUrl("/",true).permitAll())
 //                .authorizeHttpRequests(auth -> auth.requestMatchers("/admin").authenticated())
 //                .logout(logout-> logout.logoutUrl("/sign-out").logoutSuccessUrl("/"))
