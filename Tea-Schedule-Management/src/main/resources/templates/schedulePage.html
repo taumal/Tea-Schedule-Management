@@ -9,6 +9,7 @@
     <title>TCL software tea schedule</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/clock.css}"/>
     <script th:src="@{/js/fontawesome.min.js}" crossorigin="anonymous"></script>
     <style>
         .bd-placeholder-img {
@@ -101,7 +102,8 @@
                        th:unless="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" th:href="@{/login}">Log
                         In</a>
                 </div>
-                <h1 class="mt-4 text-center" style="padding-left: 100px" th:text="${formTitle}">Dashboard</h1>
+                <h1 class="mt-4 text-center" style="padding-left: 100px" th:text="${formTitle}"></h1>
+                <div  id="MyClockDisplay" class="clock"  onload="showTime()"></div>
             </div>
             <br>
 
@@ -179,6 +181,7 @@
             </th:block>
         </div>
     </div>
+
     <!--    <script>-->
     <!--        document.getElementById("editButton").addEventListener("click", function () {-->
     <!--            var inputFieldMorning = document.getElementById("morningNameInput");-->
@@ -263,6 +266,35 @@
             }
 
         }
+        function showTime(){
+            var date = new Date();
+            var h = date.getHours(); // 0 - 23
+            var m = date.getMinutes(); // 0 - 59
+            var s = date.getSeconds(); // 0 - 59
+            var session = "AM";
+
+            if(h == 0){
+                h = 12;
+            }
+
+            if(h > 12){
+                h = h - 12;
+                session = "PM";
+            }
+
+            h = (h < 10) ? "0" + h : h;
+            m = (m < 10) ? "0" + m : m;
+            s = (s < 10) ? "0" + s : s;
+
+            var time = h + ":" + m  + " " + session;
+            document.getElementById("MyClockDisplay").innerText = time;
+            document.getElementById("MyClockDisplay").textContent = time;
+
+            setTimeout(showTime, 1000);
+
+        }
+
+        showTime();
     </script>
 </main>
 </body>
