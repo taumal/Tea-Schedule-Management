@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>TCL software tea schedule</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/clock.css}"/>
+    <script th:src="@{/js/fontawesome.min.js}" crossorigin="anonymous"></script>
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+
+        .b-example-divider {
+            height: 3rem;
+            background-color: rgba(0, 0, 0, .1);
+            border: solid rgba(0, 0, 0, .15);
+            border-width: 1px 0;
+            box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+        }
+
+        .b-example-vr {
+            flex-shrink: 0;
+            width: 1.5rem;
+            height: 100vh;
+        }
+
+        .bi {
+            vertical-align: -.125em;
+            fill: currentColor;
+        }
+
+        .nav-scroller {
+            position: relative;
+            z-index: 2;
+            height: 2.75rem;
+            overflow-y: hidden;
+        }
+
+        .nav-scroller .nav {
+            display: flex;
+            flex-wrap: nowrap;
+            padding-bottom: 1rem;
+            margin-top: -1px;
+            overflow-x: auto;
+            text-align: center;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .list-group-item + .list-group-item {
+            border-top-width: 1px !important;
+        }
+
+        .parent {
+            width: 95px;
+            height: 80px;
+            position: relative;
+        }
+
+        .text-shadow {
+            text-shadow: 0 1px 1px #000000;
+        }
+
+        .top-strip {
+            height: 100px;
+            background-color: #01565b;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+<main>
+    <div class="container-fluid px-4">
+            <div class="top-strip ">
+                <div class="float-end">
+                    <a class="btn btn-dark text-white align-self-center"
+                       th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" th:href="@{/sign-out}">Sign
+                        Out</a>
+                    <a class="btn btn-dark text-white align-self-center"
+                       th:unless="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" th:href="@{/login}">Log
+                        In</a>
+                </div>
+                <h1 class="mt-4 text-center" style="padding-left: 100px" th:text="${formTitle}"></h1>
+                <div  id="MyClockDisplay" class="clock"  onload="showTime()"></div>
+            </div>
+            <br>
+
+            <div th:if="${Message != null}" class="alert alert-danger" role="alert" th:style="|margin-top: 80px;margin-bottom: -60px|">
+                <span th:text="${Message}"></span>
+            </div>
+            <div th:if="${MessageOK != null}" class="alert alert-success" role="alert" th:style="|margin-top: 80px;margin-bottom: -60px|">
+                <span th:text="${MessageOK}"></span>
+            </div>
+
+        <br>
+        <!--        <ol class="breadcrumb mb-4">-->
+        <!--            <li class="breadcrumb-item active" th:text="${formTitle}">Dashboard</li>-->
+        <!--        </ol>-->
+        <div class="list-group list-group-radio d-grid gap-3 border-0 " style="padding-top: 30px">
+            <th:block th:each="day, s: ${days}">
+                <form th:action="@{/update}" method="post">
+                    <input type="hidden" name="id" th:value="${day.id}">
+                    <input type="hidden" name="name" th:value="${day.name}">
+                    <div class="list-group-item d-flex gap-3 py-3 my-2 " aria-current="true"
+                         th:style="|background-color: ${colors[s.index]}|">
+                        <div class="d-flex gap-2 w-100 justify-content-between align-items-center">
+                            <div class="parent d-flex justify-content-center"
+                                 th:style="|background-image: url(@{/images/arrow.png}); background-size: 90px 80px; background-repeat: no-repeat;|">
+                                <div class="align-self-center" th:style="|margin-left: -10px;|">
+                                    <span class="" th:text="${day.name.substring(0,3)}"></span>
+                                    <br>
+                                    <span class="fw-bold fs-4" th:text="${day.today}"></span>
+                                </div>
+                            </div>
+                            <div class="fs-5"
+                                 th:classappend="|${colors[s.index] eq '#e1f296' ? 'text-black' : 'text-white text-shadow'}|">
+                                <h5 class="mb-0">Morning</h5>
+                                <span th:id="'morningName'+ ${day.id}" class="d-block"
+                                      th:text="${day.morningName}"></span>
+                                <input th:id="'morningNameInput' + ${day.id}" type="text" name="morningName"
+                                       th:value="${day.morningName}"
+                                       class="form-control d-none"/>
+                                <!--                            <p class="mb-0 opacity-75" style="color:black">[[${day.morningName}]] </p>-->
+                            </div>
+                            <div class="fs-5"
+                                 th:classappend="|${colors[s.index] eq '#e1f296' ? 'text-black' : 'text-white text-shadow'}|">
+                                <h5 class="mb-0">Evening</h5>
+                                <span th:id="'eveningName'+ ${day.id}" class="d-block"
+                                      th:text="${day.eveningName}"></span>
+                                <input th:id="'eveningNameInput' + ${day.id}" type="text" name="eveningName"
+                                       th:value="${day.eveningName}"
+                                       class="form-control d-none"/>
+                                <!--                            <p class="mb-0 opacity-75" style="color: black">[[${day.eveningName}]]</p>-->
+                            </div>
+                            <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                                <!--                            <h6 class="mb-0" style="color: black">Actions</h6>-->
+                                <button type="submit" id="submitButton" th:id="'submitButton#'+ ${day.id}"
+                                        class="btn btn-success btn-sm h4 mr-3 d-none" role="button"
+                                        onclick="showHideInputFields(this.id)">
+                                    <!--                                    th:href="@{'/branch/edit/' +${day.id}}"-->
+                                    <i class="fa-solid fa-check"></i>
+                                </button>
+                                <button type="button" id="cancelButton" th:id="'cancelButton#'+ ${day.id}"
+                                        class="btn btn-danger btn-sm h4 mr-3 d-none" role="button"
+                                        onclick="cancelButton(this.id)">
+                                    <!--                                    th:href="@{'/branch/edit/' +${day.id}}"-->
+                                    <i class="fa-solid fa-ban"></i>
+                                </button>
+                                <button type="button" id="editButton" th:id="'showHideBtn#'+ ${day.id}"
+                                        class="btn btn-dark btn-sm h4 mr-3" role="button"
+                                        onclick="showHideInputFields(this.id)">
+                                    <!--                                    th:href="@{'/branch/edit/' +${day.id}}"-->
+                                    <i class="fas fa-edit me-1"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </th:block>
+        </div>
+    </div>
+
+    <!--    <script>-->
+    <!--        document.getElementById("editButton").addEventListener("click", function () {-->
+    <!--            var inputFieldMorning = document.getElementById("morningNameInput");-->
+    <!--            var inputFieldEvening = document.getElementById("eveningNameInput");-->
+    <!--            var dataDisplay = document.querySelector(".data-display");-->
+
+    <!--            if (inputFieldMorning.classList.contains("d-none")&& inputFieldEvening.classList.contains("d-none")){-->
+    <!--                inputFieldMorning.classList.remove("d-none");-->
+    <!--                inputFieldEvening.classList.remove("d-none")-->
+    <!--                dataDisplay.style.display = "none";-->
+    <!--            } else {-->
+    <!--                inputFieldMorning.classList.add("d-none");-->
+    <!--                inputFieldEvening.classList.add("d-none");-->
+    <!--                dataDisplay.style.display = "inline"; // Or "block", depending on your styling-->
+    <!--            }-->
+    <!--        });-->
+    <!--    </script>-->
+    <script>
+        /*var editButtons = document.querySelectorAll(".btn");
+        editButtons.forEach(function (button) {
+            button.addEventListener("click", function () {
+                var inputFieldMorning = document.getElementById("morningNameInput2");
+                var inputFieldEvening = document.getElementById("eveningNameInput2");
+                var dataDisplay = document.querySelector(".data-display");
+                if (inputFieldMorning.classList.contains("d-none") && inputFieldEvening.classList.contains("d-none")) {
+                    inputFieldMorning.classList.remove("d-none");
+                    inputFieldEvening.classList.remove("d-none")
+                    dataDisplay.style.display = "none";
+                } else {
+                    inputFieldMorning.classList.add("d-none");
+                    inputFieldEvening.classList.add("d-none");
+                    dataDisplay.style.display = "inline"; // Or "block", depending on your styling
+                }
+            });
+        });*/
+
+        function showHideInputFields(domId) {
+            let id = domId.split('#')[1];
+            var morningName = document.getElementById("morningName" + id);
+            var eveningName = document.getElementById("eveningName" + id);
+            var inputFieldMorning = document.getElementById("morningNameInput" + id);
+            var inputFieldEvening = document.getElementById("eveningNameInput" + id);
+            var submitBtn = document.getElementById("submitButton#" + id);
+            var cancelBtn = document.getElementById("cancelButton#" + id);
+            var showHideBtn = document.getElementById(domId);
+
+            if (inputFieldMorning.classList.contains("d-none") && inputFieldEvening.classList.contains("d-none")) {
+                morningName.classList.remove("d-block");
+                morningName.classList.add("d-none");
+                eveningName.classList.remove("d-block");
+                eveningName.classList.add("d-none");
+                inputFieldMorning.classList.remove("d-none");
+                inputFieldEvening.classList.remove("d-none");
+                submitBtn.classList.remove("d-none");
+                cancelBtn.classList.remove("d-none");
+                showHideBtn.classList.add("d-none");
+            } else {
+            }
+        }
+
+        function cancelButton(domId) {
+            let id = domId.split('#')[1];
+            var morningName = document.getElementById("morningName" + id);
+            var eveningName = document.getElementById("eveningName" + id);
+            var inputFieldMorning = document.getElementById("morningNameInput" + id);
+            var inputFieldEvening = document.getElementById("eveningNameInput" + id);
+            var submitBtn = document.getElementById("submitButton#" + id);
+            var cancelBtn = document.getElementById(domId);
+            var showHideBtn = document.getElementById("showHideBtn#" + id);
+            var dataDisplay = document.querySelector(".data-display");
+            if (showHideBtn.classList.contains("d-none")) {
+                morningName.classList.add("d-block");
+                morningName.classList.remove("d-none");
+                eveningName.classList.add("d-block");
+                eveningName.classList.remove("d-none");
+                inputFieldMorning.classList.add("d-none");
+                inputFieldEvening.classList.add("d-none");
+                submitBtn.classList.add("d-none");
+                cancelBtn.classList.add("d-none");
+                showHideBtn.classList.remove("d-none");
+                dataDisplay.style.display = "inline";
+            }
+
+        }
+        function showTime(){
+            const date = new Date();
+            let h = date.getHours(); // 0 - 23
+            let m = date.getMinutes(); // 0 - 59
+            let s = date.getSeconds(); // 0 - 59
+            let session = "AM";
+
+            if(h === 0){
+                h = 12;
+            }
+
+            if(h > 12){
+                h = h - 12;
+                session = "PM";
+            }
+
+            h = (h < 10) ? "0" + h : h;
+            m = (m < 10) ? "0" + m : m;
+            s = (s < 10) ? "0" + s : s;
+
+            let time = h + ":" + m  + " " + session;
+            document.getElementById("MyClockDisplay").innerText = time;
+            document.getElementById("MyClockDisplay").textContent = time;
+
+            setTimeout(showTime, 1000);
+
+        }
+
+        showTime();
+    </script>
+</main>
+</body>
+</html>
